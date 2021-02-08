@@ -1,39 +1,38 @@
-import 'dart:async';
 /*
-Breaks a Javascript string into individual user-perceived "characters" 
+Breaks a Javascript string into individual user-perceived "characters"
 called extended grapheme clusters by implementing the Unicode UAX-29 standard, version 10.0.0
 
 Usage:
 var splitter = new GraphemeSplitter();
 //returns an array of strings, one string for each grapheme cluster
-var graphemes = splitter.splitGraphemes(string); 
+var graphemes = splitter.splitGraphemes(string);
 
 */
 
-final int CR = 0;
-final int LF = 1;
-final int Control = 2;
-final int Extend = 3;
-final int Regional_Indicator = 4;
-final int SpacingMark = 5;
-final int L = 6;
-final int V = 7;
-final int T = 8;
-final int LV = 9;
-final int LVT = 10;
-final int Other = 11;
-final int Prepend = 12;
-final int E_Base = 13;
-final int E_Modifier = 14;
-final int ZWJ = 15;
-final int Glue_After_Zwj = 16;
-final int E_Base_GAZ = 17;
+const int CR = 0;
+const int LF = 1;
+const int Control = 2;
+const int Extend = 3;
+const int Regional_Indicator = 4;
+const int SpacingMark = 5;
+const int L = 6;
+const int V = 7;
+const int T = 8;
+const int LV = 9;
+const int LVT = 10;
+const int Other = 11;
+const int Prepend = 12;
+const int E_Base = 13;
+const int E_Modifier = 14;
+const int ZWJ = 15;
+const int Glue_After_Zwj = 16;
+const int E_Base_GAZ = 17;
 
-final int NotBreak = 0;
-final int BreakStart = 1;
-final int Break = 2;
-final int BreakLastRegional = 3;
-final int BreakPenultimateRegional = 4;
+const int NotBreak = 0;
+const int BreakStart = 1;
+const int Break = 2;
+const int BreakLastRegional = 3;
+const int BreakPenultimateRegional = 4;
 
 bool isSurrogate(String str, int pos) {
   return 0xd800 <= str.codeUnitAt(pos) &&
@@ -44,7 +43,7 @@ bool isSurrogate(String str, int pos) {
 
 /// codePointAt gets a Unicode code point from a JavaScript UTF-16 string
 /// handling surrogate pairs appropriately
-int codePointAt(String str, [int idx]) {
+int codePointAt(String str, [int? idx]) {
   if (idx == null) {
     idx = 0;
   }
@@ -2210,7 +2209,7 @@ int getGraphemeBreakProperty(int code) {
 
 class GraphemeSplitter {
   /// nextBreak returns the next grapheme break in the string after the given index
-  int nextBreak(String string, [int index]) {
+  int nextBreak(String string, [int? index]) {
     if (index == null) {
       index = 0;
     }
@@ -2221,7 +2220,7 @@ class GraphemeSplitter {
       return string.length;
     }
     final prev = getGraphemeBreakProperty(codePointAt(string, index));
-    final mid = new List<int>();
+    final mid = <int>[];
     for (int i = index + 1; i < string.length; i++) {
       // check for already processed low surrogates
       if (isSurrogate(string, i - 1)) {
@@ -2240,7 +2239,7 @@ class GraphemeSplitter {
 
   /// splitGraphemes Breaks the given string into an array of grapheme cluster strings
   Iterable<String> splitGraphemes(String str) {
-    final res = new List<String>();
+    final res = <String>[];
     var index = 0;
     var brk;
     while ((brk = this.nextBreak(str, index)) < str.length) {
